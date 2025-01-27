@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+U:\12\AEP_Danzer\eclipse-workspace\.metadata\.plugins\org.eclipse.jdt.core
+2527806290.index
+740571125.index
+1865797976.index

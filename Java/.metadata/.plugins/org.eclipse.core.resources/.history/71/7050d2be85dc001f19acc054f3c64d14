@@ -1,0 +1,23 @@
+import java.util.ArrayList;
+
+public class Box
+{
+	public String name;
+	public ArrayList<Artikel> inhalt;
+	
+	public Box(String name)
+	{
+		this.name = name;
+		this.inhalt = new ArrayList<>(); 
+	}
+	
+	public double getGewichtKg()
+	{
+	  double result = 0;
+	  for (int i = 0; i < this.inhalt.size(); ++i)
+	  {
+	    result += this.inhalt.get(i).getGewichtKg();
+	  }
+	  return result;
+	}
+}

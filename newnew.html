@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwort-Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 60%;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .box {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 10px;
+            border-radius: 5px;
+            background: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .password {
+            font-family: monospace;
+            background-color: #ddd;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .icon {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        let selectedRow = null;
+        
+        function anzeigenPasswort(website, benutzername, passwort, row) {
+            document.getElementById("selectedWebsite").innerText = website;
+            document.getElementById("selectedUsername").innerText = benutzername;
+            document.getElementById("selectedPassword").innerText = passwort;
+            document.getElementById("selectedPassword").setAttribute("data-password", passwort);
+            selectedRow = row;
+        }
+
+        function togglePasswordVisibility() {
+            let passwordElement = document.getElementById("selectedPassword");
+            if (passwordElement.innerText === "••••••••") {
+                passwordElement.innerText = passwordElement.getAttribute("data-password");
+            } else {
+                passwordElement.innerText = "••••••••";
+            }
+        }
+
+        function copyPassword() {
+            let password = document.getElementById("selectedPassword").getAttribute("data-password");
+            navigator.clipboard.writeText(password);
+            alert("Passwort kopiert!");
+        }
+
+        function addEntry() {
+            let table = document.querySelector("table");
+            let row = table.insertRow();
+            row.innerHTML = `<td>Neue Website</td><td><a href="#">neue-url.com</a></td>`;
+            row.onclick = function() { anzeigenPasswort("Neue Website", "neuerBenutzer", "neuesPasswort", row); };
+        }
+
+        function deleteEntry() {
+            if (selectedRow) {
+                selectedRow.remove();
+                resetDisplay();
+            }
+        }
+
+        function editEntry() {
+            if (selectedRow) {
+                let cells = selectedRow.getElementsByTagName("td");
+                let website = prompt("Neue Website:", cells[0].innerText);
+                let url = prompt("Neue URL:", cells[1].innerText);
+                if (website && url) {
+                    cells[0].innerText = website;
+                    cells[1].innerHTML = `<a href="#">${url}</a>`;
+                }
+            }
+        }
+
+        function resetDisplay() {
+            document.getElementById("selectedWebsite").innerText = "-";
+            document.getElementById("selectedUsername").innerText = "-";
+            document.getElementById("selectedPassword").innerText = "-";
+            document.getElementById("selectedPassword").setAttribute("data-password", "-");
+            selectedRow = null;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Passwort-Manager</h2>
+            <div class="icons">
+                <button onclick="addEntry()">➕</button>
+                <button onclick="deleteEntry()">🗑️</button>
+                <button onclick="editEntry()">✏️</button>
+                <button>✔️</button>
+                <button>❌</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="box">
+                <h3>Gespeicherte Passwörter</h3>
+                <table>
+                    <tr>
+                        <th>Website</th>
+                        <th>URL</th>
+                    </tr>
+                    <tr onclick="anzeigenPasswort('Facebook', 'user123', 'meinPasswort123', this)">
+                        <td>Facebook</td>
+                        <td><a href="https://www.facebook.com" target="_blank">facebook.com</a></td>
+                    </tr>
+                    <tr onclick="anzeigenPasswort('WhatsApp', 'whatsappUser', 'whatsappPasswort', this)">
+                        <td>WhatsApp</td>
+                        <td><a href="https://www.whatsapp.com" target="_blank">whatsapp.com</a></td>
+                    </tr>
+                    <tr onclick="anzeigenPasswort('Instagram', 'instaUser', 'instaGeheim', this)">
+                        <td>Instagram</td>
+                        <td><a href="https://www.instagram.com" target="_blank">instagram.com</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="box">
+                <h3>Passwort-Anzeige</h3>
+                <p><strong>Website:</strong> <span id="selectedWebsite">-</span></p>
+                <p><strong>Benutzername:</strong> <span id="selectedUsername">-</span></p>
+                <p>
+                    <strong>Passwort:</strong> 
+                    <span id="selectedPassword" class="password" data-password="-">-</span>
+                    <span class="icon" onclick="togglePasswordVisibility()">👁️</span>
+                    <span class="icon" onclick="copyPassword()">📋</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
